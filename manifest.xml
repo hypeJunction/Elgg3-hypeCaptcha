@@ -4,7 +4,7 @@
     <name>hypeCaptcha</name>
     <id>hypeCaptcha</id>
     <description>Captcha challenge</description>
-    <version type="dist">0.0.0</version>
+    <version type="dist">1.0.0</version>
 
     <category>forms</category>
 

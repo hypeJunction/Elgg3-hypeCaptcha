@@ -33,7 +33,6 @@ echo elgg_format_element('div', [
 			});
 
 			var $form = $('#<?= $id ?>').closest('form');
-            $form.find('[type="submit"]').prop('disabled', true);
 
 			var form = new AjaxForm($form);
 
@@ -47,7 +46,6 @@ echo elgg_format_element('div', [
 					}
 				}).done(function (response) {
 					if (response.is_human) {
-						$form.find('[type="submit"]').prop('disabled', false);
 						resolve();
 					} else {
 						elgg.register_error(elgg.echo('captcha:error'));

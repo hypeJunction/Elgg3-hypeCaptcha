@@ -7,20 +7,31 @@ use Elgg\Hook;
 class ConfigureRoutes {
 
 	/**
-	 * Set captcha gatekeeper
+	 * Set captcha gatekeeper for actions
 	 *
 	 * @param Hook $hook Hook
 	 *
 	 * @return array
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
 	 */
 	public function __invoke(Hook $hook) {
-		$config = $hook->getValue();
+		if (Captcha::isHuman()) {
+			return null;
+		}
 
-		$middleware = elgg_extract('middleware', $config, []);
-		array_unshift($middleware, CaptchaGatekeeper::class);
+		$type = $hook->getType();
+		list($prefix, ) = explode(':', $type, 2);
 
-		$config['middleware'] = $middleware;
+		if ($prefix === 'action') {
+			$config = $hook->getValue();
 
-		return $config;
+			$middleware = elgg_extract('middleware', $config, []);
+			array_unshift($middleware, CaptchaGatekeeper::class);
+
+			$config['middleware'] = $middleware;
+
+			return $config;
+		}
 	}
 }

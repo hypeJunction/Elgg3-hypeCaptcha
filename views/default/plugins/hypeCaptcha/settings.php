@@ -25,14 +25,6 @@ echo elgg_view_field([
 ]);
 
 echo elgg_view_field([
-	'#type' => 'threshold',
-	'#label' => elgg_echo('captcha:threshold'),
-	'#help' => elgg_echo('captcha:threshold:help'),
-	'name' => 'params[secret_key]',
-	'value' => $entity->secret_key,
-]);
-
-echo elgg_view_field([
 	'#type' => 'hidden',
 	'name' => 'flush_cache',
 	'value' => '1',

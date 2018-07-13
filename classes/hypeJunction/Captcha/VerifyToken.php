@@ -24,11 +24,13 @@ class VerifyToken {
 			$contents = $response->getBody()->getContents();
 			$data = json_decode($contents);
 
-			elgg_get_session()->set('recaptcha.score', $data->score);
+			if ($data->success) {
+				Captcha::rememberHuman();
+			}
 
-			$data->threshold = elgg_get_plugin_setting('threshold', 'hypeCaptcha');
-
-			return elgg_ok_response((array) $data);
+			return elgg_ok_response([
+				'is_human' => $data->success,
+			]);
 		}
 
 		return elgg_error_response('', REFERER, $response->getStatusCode());

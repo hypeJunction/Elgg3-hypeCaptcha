@@ -18,4 +18,9 @@
         <version>3.0</version>
     </requires>
 
+    <requires>
+        <type>plugin</type>
+        <name>hypeAjax</name>
+    </requires>
+
 </plugin_manifest>

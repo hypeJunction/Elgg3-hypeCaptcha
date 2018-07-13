@@ -3,6 +3,7 @@
 namespace hypeJunction\Captcha;
 
 use Elgg\EntityPermissionsException;
+use Elgg\HttpException;
 use Elgg\Request;
 
 class CaptchaGatekeeper {
@@ -13,21 +14,19 @@ class CaptchaGatekeeper {
 	 * @param Request $request Request
 	 *
 	 * @return void
-	 * @throws EntityPermissionsException
+	 * @throws HttpException
 	 * @throws \DI\DependencyException
 	 * @throws \DI\NotFoundException
 	 */
 	public function __invoke(Request $request) {
 
-		if (!Captcha::verificationComplete()) {
-			return;
+		if (Captcha::isHuman()) {
+			return null;
 		}
 
-		if (!Captcha::isHuman()) {
-			$ex = new EntityPermissionsException();
-			$ex->setRedirectUrl(elgg_generate_url('bots'));
-
-			throw $ex;
+		$protected = $request->getParam('__rc');
+		if (isset($protected) && !Captcha::isHuman()) {
+			throw new HttpException(elgg_echo('captcha:gatekeeper'), ELGG_HTTP_FORBIDDEN);
 		}
 	}
 }

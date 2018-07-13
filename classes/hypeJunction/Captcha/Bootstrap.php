@@ -35,13 +35,10 @@ class Bootstrap extends PluginBootstrap {
 	public function init() {
 		elgg_define_js('recaptcha', [
 			'src' => elgg_http_add_url_query_elements('//www.google.com/recaptcha/api.js', [
-				'render' => elgg()->get('recaptcha.site_key'),
 				'onload' => 'invokeRecaptcha',
 			]),
 			'exports' => 'window.grecaptcha',
 		]);
-
-		elgg_extend_view('page/elements/foot', 'page/elements/captcha');
 	}
 
 	/**

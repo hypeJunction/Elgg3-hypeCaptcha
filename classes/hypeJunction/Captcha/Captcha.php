@@ -4,31 +4,22 @@ namespace hypeJunction\Captcha;
 
 class Captcha {
 
-	const DEFAULT_THRESHOLD = 0.5;
-
-	/**
-	 * Get bot threshold
-	 *
-	 * @return float
-	 * @throws \DI\DependencyException
-	 * @throws \DI\NotFoundException
-	 */
-	public static function threshold() {
-		$threshold = elgg()->get('recaptcha.threshold');
-		if (!isset($threshold)) {
-			return self::DEFAULT_THRESHOLD;
-		}
-
-		return (float) $threshold;
-	}
-
 	/**
 	 * Check if recaptcha check should be passed
 	 * @return bool
 	 */
 	public static function bypasses() {
-		$session = elgg_get_session();
-		$bypass = $session->get('recaptcha.bypass');
+		$bypass = false;
+		if (elgg_is_logged_in()) {
+			$user = elgg_get_logged_in_user_entity();
+			if ($user->recaptcha_is_human) {
+				$bypass = true;
+			}
+		} else {
+			$session = elgg_get_session();
+			$bypass = $session->get('recaptcha.bypass');
+		}
+
 		return elgg_trigger_plugin_hook('bypass', 'captcha', null, $bypass);
 	}
 
@@ -48,9 +39,23 @@ class Captcha {
 	 */
 	public static function verificationComplete() {
 		$session = elgg_get_session();
-		$score = $session->get('recaptcha.score');
+		$is_human = $session->get('recaptcha.is_human');
 
-		return isset($score);
+		return isset($is_human);
+	}
+
+	/**
+	 * Remember solved captcha
+	 * @return void
+	 */
+	public static function rememberHuman() {
+		$session = elgg_get_session();
+		$session->set('recaptcha.is_human', true);
+
+		$user = elgg_get_logged_in_user_entity();
+		if ($user) {
+			$user->recaptcha_is_human = true;
+		}
 	}
 
 	/**
@@ -68,8 +73,6 @@ class Captcha {
 		}
 
 		$session = elgg_get_session();
-		$score = $session->get('recaptcha.score');
-
-		return $score >= self::threshold();
+		return (bool) $session->get('recaptcha.is_human');
 	}
 }

@@ -9,15 +9,4 @@ return [
 			'controller' => \hypeJunction\Captcha\VerifyToken::class,
 		]
 	],
-
-	'settings' => [
-		'threshold' => 0.5,
-	],
-
-	'routes' => [
-		'bots' => [
-			'path' => '/bots',
-			'resource' => 'bots',
-		],
-	],
 ];

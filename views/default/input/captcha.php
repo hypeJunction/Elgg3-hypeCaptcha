@@ -39,6 +39,10 @@ echo elgg_format_element('div', [
 			form.onSubmit(function (resolve, reject) {
 				var token = grecaptcha.getResponse(widget);
 
+				if (!token) {
+					return reject();
+                }
+                
 				var ajax = new Ajax();
 				ajax.action('recaptcha', {
 					data: {
